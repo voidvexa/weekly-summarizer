@@ -141,7 +141,7 @@ def run_summary():
         </style>
     </head>
     <body>
-        <h1>Weekly Moat Investor Summary</h1>
+        <h1>Weekly Investor Summary</h1>
     """
 
     for ticker in tickers:
@@ -185,12 +185,14 @@ def main():
         run_summary()
         return
 
-    # For now, we will just schedule it for every Friday at 18:00
-    scheduler = BlockingScheduler()
-    # Schedule for every Friday at 18:00 (6 PM)
-    scheduler.add_job(run_summary, CronTrigger(day_of_week='fri', hour=18))
+    import zoneinfo
+    greek_tz = zoneinfo.ZoneInfo("Europe/Athens")
+
+    scheduler = BlockingScheduler(timezone=greek_tz)
+    # Schedule for every Saturday at 11:00 AM Greek Time
+    scheduler.add_job(run_summary, CronTrigger(day_of_week='sat', hour=11, timezone=greek_tz))
     
-    print("Scheduler started. Waiting for next run (Friday 18:00).")
+    print("Scheduler started. Waiting for next run (Saturday 11:00 AM Greek Time).")
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
