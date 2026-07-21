@@ -178,7 +178,11 @@ def main():
     load_dotenv()
     print("Weekly Summarizer Bot starting...")
     
-    # Run once immediately on startup if you want to test, or just schedule it. 
+    if "--test" in sys.argv:
+        print("Test mode activated. Running summary immediately...")
+        run_summary()
+        return
+
     # For now, we will just schedule it for every Friday at 18:00
     scheduler = BlockingScheduler()
     # Schedule for every Friday at 18:00 (6 PM)
