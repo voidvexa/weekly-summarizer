@@ -92,16 +92,18 @@ def send_email(html_content, sender, password, recipient, server, port):
     msg.add_alternative(html_content, subtype='html')
 
     try:
-        if port == 465:
-            with smtplib.SMTP_SSL(server, port) as smtp:
-                smtp.login(sender, password)
-                smtp.send_message(msg)
+        if smtp_port == 465:
+            server = smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=15)
         else:
-            with smtplib.SMTP(server, port) as smtp:
-                smtp.starttls()
-                smtp.login(sender, password)
-                smtp.send_message(msg)
-        print("Email sent successfully.")
+            server = smtplib.SMTP(smtp_server, smtp_port, timeout=15)
+            server.starttls()
+            
+        server.login(sender, password)
+        server.sendmail(sender, recipient, msg.as_string())
+        server.quit()
+        print("Email sent successfully!")
+    except TimeoutError:
+        print("Error: The connection timed out. Your VPS provider (e.g. Hetzner) might be blocking outgoing SMTP ports (465/587).")
     except Exception as e:
         print(f"Failed to send email: {e}")
 
