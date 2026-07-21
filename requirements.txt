@@ -1,0 +1,5 @@
+anthropic
+python-dotenv
+feedparser
+yfinance
+apscheduler
